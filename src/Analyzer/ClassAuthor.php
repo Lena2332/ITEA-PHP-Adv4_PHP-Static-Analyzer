@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the "default-project" package.
+ *
+ * (c) Vladimir Kuprienko <vldmr.kuprienko@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Greeflas\StaticAnalyzer\Analyzer;
 
 use Greeflas\StaticAnalyzer\PhpClassInfo;
@@ -33,7 +42,10 @@ final class ClassAuthor
         $counter = 0;
 
         foreach ($finder as $file) {
+            echo $file->getPathname();
             $namespace = PhpClassInfo::getFullClassName($file->getPathname());
+            echo \PHP_EOL;
+            echo $namespace;
 
             try {
                 $reflector = new \ReflectionClass($namespace);
