@@ -12,12 +12,14 @@
 namespace Greeflas\StaticAnalyzer\Analyzer;
 
 /**
+ * Class get full class name with namespace and return name, type of class, statistic of methods and properties
+ *
  * @author Elena Kupriec <box32.lena@gmail.com>
  */
 final class ClassStatistic
 {
-    private $fullClassName;
     private $reflector;
+    private $classType = 'default';
 
     /**
      * ClassStatistic constructor.
@@ -31,163 +33,33 @@ final class ClassStatistic
         $this->reflector = new \ReflectionClass($fullClassName);
     }
 
-    /**
-     * Return classname
-     *
-     * @return string with classname
-     */
+
     public function getClassName(): string
     {
         return $this->reflector->getName();
     }
 
-    /**
-     * @return string of classType (abstract, final, trait ...)
-     */
+
     public function getClassType(): string
     {
-        $class_type_arr = [];
-
         if ($this->reflector->isAbstract()) {
-            $class_type_arr[] = 'abstract';
+            $this->classType = 'abstract';
         }
 
         if ($this->reflector->isFinal()) {
-            $class_type_arr[] = 'final';
+            $this->classType = 'final';
         }
 
-        if ($this->reflector->isInterface()) {
-            $class_type_arr[] = 'interface';
-        }
-
-        if ($this->reflector->isAnonymous()) {
-            $class_type_arr[] = 'anonimus';
-        }
-
-        if ($this->reflector->isTrait()) {
-            $class_type_arr[] = 'trait';
-        }
-
-        if ($this->reflector->isCloneable()) {
-            $class_type_arr[] = 'clonable';
-        }
-
-        if ($this->reflector->isIterable()) {
-            $class_type_arr[] = 'iterable';
-        }
-
-        if ($this->reflector->isInternal()) {
-            $class_type_arr[] = 'internal';
-        }
-
-        if ($this->reflector->isInstantiable()) {
-            $class_type_arr[] = 'instantiable';
-        }
-
-        return \implode(', ', $class_type_arr);
+        return $this->classType;
     }
 
-    /**
-     * Return array with amounts of public, private, protected properties
-     *
-     * @return array
-     */
-    public function getPropertiesData(): array
+    public function getProperty(): object
     {
-        $property_data = $this->reflector->getProperties();
-
-        $publ = 0;
-        $publ_stat = 0;
-        $prot = 0;
-        $prot_stat = 0;
-        $priv = 0;
-
-        if (!empty($property_data)) {
-            foreach ($property_data as $prop) {
-                if ($prop->isPublic()) {
-                    $publ++;
-
-                    if ($prop->isStatic()) {
-                        $publ_stat++;
-                    }
-                }
-
-                if ($prop->isProtected()) {
-                    $prot++;
-
-                    if ($prop->isStatic()) {
-                        $prot_stat++;
-                    }
-                }
-
-                if ($prop->isPrivate()) {
-                    $priv++;
-                }
-            }
-        }
-
-        $output_prop_array = [
-            'public' => $publ,
-            'public_static' => $publ_stat,
-            'protected' => $prot_stat,
-            'protected_static' => $prot_stat,
-            'private' => $priv,
-        ];
-
-        return $output_prop_array;
+        return new ClassPropertiesCount($this->reflector);
     }
 
-    /**
-     * Return array with amount of public, private,protected methods
-     */
-    public function getMethodsData(): array
+    public function getMethods(): object
     {
-        $methods_data = $this->reflector->getMethods();
-
-        $publ = 0;
-        $publ_stat = 0;
-        $prot = 0;
-        $prot_stat = 0;
-        $priv = 0;
-        $priv_stat = 0;
-
-        if (!empty($methods_data)) {
-            foreach ($methods_data as $method) {
-                if ($method->isPublic()) {
-                    $publ++;
-
-                    if ($method->isStatic()) {
-                        $publ_stat++;
-                    }
-                }
-
-                if ($method->isProtected()) {
-                    $prot++;
-
-                    if ($method->isStatic()) {
-                        $prot_stat++;
-                    }
-                }
-
-                if ($method->isPrivate()) {
-                    $priv++;
-
-                    if ($method->isStatic()) {
-                        $priv_stat++;
-                    }
-                }
-            }
-        }
-
-        $output_method_array = [
-            'public' => $publ,
-            'public_static' => $publ_stat,
-            'protected' => $prot_stat,
-            'protected_static' => $prot_stat,
-            'private' => $priv,
-            'private_static' => $priv_stat,
-        ];
-
-        return $output_method_array;
+        return new ClassMethodsCount($this->reflector);
     }
 }

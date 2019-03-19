@@ -42,10 +42,7 @@ final class ClassAuthor
         $counter = 0;
 
         foreach ($finder as $file) {
-            echo $file->getPathname();
             $namespace = PhpClassInfo::getFullClassName($file->getPathname());
-            echo \PHP_EOL;
-            echo $namespace;
 
             try {
                 $reflector = new \ReflectionClass($namespace);

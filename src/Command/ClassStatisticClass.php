@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * @author Elena Kupriec <box32.lena@gmail.com>
+ * {@inheritdoc}
  */
 class ClassStatisticClass extends Command
 {
@@ -42,31 +42,33 @@ class ClassStatisticClass extends Command
 
         $class_name = $statistic->getClassName();
         $class_type = $statistic->getClassType();
-        $class_properties_data = $statistic->getPropertiesData();
-        $class_methods_data = $statistic->getMethodsData();
+        $properties = $statistic->getProperty();
+        $methods = $statistic->getMethods();
 
         $output->writeln(\sprintf(
             '<info>Class: %s is %s
                           Properties:
-                               public: %s (%s static)
-                               protected: %s (%s static)
-                               private: %s
+                               public: %s %s
+                               protected: %s %s
+                               private: %s %s 
                           Methods:
-                               public: %s (%s static)
-                               protected: %s 
-                               private: %s (%s static)</info>',
+                               public: %s %s
+                               protected: %s %s
+                               private: %s %s</info>',
             $class_name,
             $class_type,
-            $class_properties_data['public'],
-            $class_properties_data['public_static'],
-            $class_properties_data['protected'],
-            $class_properties_data['protected_static'],
-            $class_properties_data['private'],
-            $class_methods_data['public'],
-            $class_methods_data['public_static'],
-            $class_methods_data['protected'],
-            $class_methods_data['private'],
-            $class_methods_data['private_static']
+            $properties->publ,
+            $properties->publ_stat_str,
+            $properties->prot,
+            $properties->prot_stat_str,
+            $properties->priv,
+            $properties->priv_stat_str,
+            $methods->publ,
+            $methods->publ_stat_str,
+            $methods->prot,
+            $methods->prot_stat_str,
+            $methods->priv,
+            $methods->priv_stat_str
 
         ));
     }
